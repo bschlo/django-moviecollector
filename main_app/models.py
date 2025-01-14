@@ -36,4 +36,10 @@ class Rating(models.Model):
     return f"{self.get_rating_display()} rating on {self.date}"
   class Meta:
      ordering = ['-rating']
-  
+
+class Actor(models.Model):
+   name = models.CharField(max_length=50)
+   
+   def __string__(self):
+      return self.name
+   

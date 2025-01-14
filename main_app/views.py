@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .models import Movie, Rating
-from .serializers import MovieSerializer, RatingSerializer
+from .models import Movie, Rating, Actor
+from .serializers import MovieSerializer, RatingSerializer, ActorSerializer
 
 # Define the home view
 class Home(APIView):
@@ -39,6 +39,14 @@ class RatingDetail(generics.RetrieveUpdateDestroyAPIView):
     movie_id = self.kwargs['movie_id']
     return Rating.objects.filter(movie_id=movie_id)
   
+class ActorList(generics.ListCreateAPIView):
+  queryset = Actor.objects.all()
+  serializer_class = ActorSerializer
 
+class ActorDetail(generics.RetrieveUpdateDestroyAPIView):
+  queryset = Actor.objects.all()
+  serializer_class = ActorSerializer
+  lookup_field = 'id'
+  
 
   
