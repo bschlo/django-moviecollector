@@ -18,6 +18,19 @@ class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Movie.objects.all()
   serializer_class = MovieSerializer
   lookup_field = 'id'
+  
+  def retrieve(self, request, *args, **kwargs):
+    instance = self.get_object()
+    serializer = self.get_serializer(instance)
+
+    # Get the list of toys not associated with this cat
+    actors_not_associated = Actor.objects.exclude(id__in=instance.actors.all())
+    actors_serializer = ActorSerializer(actors_not_associated, many=True)
+
+    return Response({
+        'movie': serializer.data,
+        'actors_not_associated': actors_serializer.data
+    })
 
 class RatingListCreate(generics.ListCreateAPIView):
   serializer_class = RatingSerializer
@@ -47,6 +60,17 @@ class ActorDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Actor.objects.all()
   serializer_class = ActorSerializer
   lookup_field = 'id'
-  
 
-  
+class AddActorToMovie(APIView):
+  def post(self, request, movie_id, actor_id):
+    movie = Movie.objects.get(id=movie_id)
+    actor = Actor.objects.get(id=actor_id)
+    movie.actors.add(actor)
+    return Response({'message': f'Actor {actor.name} added to Movie {movie.name}'})
+
+class RemoveActorFromMovie(APIView):
+  def post(self, request, movie_id, actor_id):
+    movie = Movie.objects.get(id=movie_id)
+    actor = Actor.objects.get(id=actor_id)
+    movie.actors.remove(actor)
+    return Response({'message': f'Actor {actor.name} removed from Movie {movie.name}'})

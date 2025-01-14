@@ -1,8 +1,14 @@
 from rest_framework import serializers
 from .models import Movie, Rating, Actor
 
+class ActorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = '__all__'
+
 class MovieSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()   
+    actors = ActorSerializer(many=True, read_only=True)
     class Meta:
         model = Movie
         fields = '__all__'
@@ -20,9 +26,5 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('movie',)
 
-class ActorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Actor
-        fields = '__all__'
-        
+      
 
