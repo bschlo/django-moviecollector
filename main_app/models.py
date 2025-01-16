@@ -1,4 +1,7 @@
 from django.db import models
+from datetime import date
+# Import the User
+from django.contrib.auth.models import User
 
 RATINGS = (
    (1, '1'),
@@ -21,6 +24,7 @@ class Movie(models.Model):
     description = models.TextField(max_length=250)
     year_made = models.IntegerField()
     actors = models.ManyToManyField(Actor)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
     
